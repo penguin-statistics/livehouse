@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ConnectedLiveServiceClient interface {
 	PushReportBatch(ctx context.Context, in *ReportBatchRequest, opts ...grpc.CallOption) (*ReportBatchACK, error)
 	PushMatrixBatch(ctx context.Context, in *MatrixBatchRequest, opts ...grpc.CallOption) (*MatrixBatchACK, error)
+	GetMatrixBatch(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type connectedLiveServiceClient struct {
@@ -52,12 +53,22 @@ func (c *connectedLiveServiceClient) PushMatrixBatch(ctx context.Context, in *Ma
 	return out, nil
 }
 
+func (c *connectedLiveServiceClient) GetMatrixBatch(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/ConnectedLiveService/GetMatrixBatch", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ConnectedLiveServiceServer is the server API for ConnectedLiveService service.
 // All implementations must embed UnimplementedConnectedLiveServiceServer
 // for forward compatibility
 type ConnectedLiveServiceServer interface {
 	PushReportBatch(context.Context, *ReportBatchRequest) (*ReportBatchACK, error)
 	PushMatrixBatch(context.Context, *MatrixBatchRequest) (*MatrixBatchACK, error)
+	GetMatrixBatch(context.Context, *Empty) (*Empty, error)
 	mustEmbedUnimplementedConnectedLiveServiceServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedConnectedLiveServiceServer) PushReportBatch(context.Context, 
 }
 func (UnimplementedConnectedLiveServiceServer) PushMatrixBatch(context.Context, *MatrixBatchRequest) (*MatrixBatchACK, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PushMatrixBatch not implemented")
+}
+func (UnimplementedConnectedLiveServiceServer) GetMatrixBatch(context.Context, *Empty) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMatrixBatch not implemented")
 }
 func (UnimplementedConnectedLiveServiceServer) mustEmbedUnimplementedConnectedLiveServiceServer() {}
 
@@ -120,6 +134,24 @@ func _ConnectedLiveService_PushMatrixBatch_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConnectedLiveService_GetMatrixBatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectedLiveServiceServer).GetMatrixBatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ConnectedLiveService/GetMatrixBatch",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectedLiveServiceServer).GetMatrixBatch(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ConnectedLiveService_ServiceDesc is the grpc.ServiceDesc for ConnectedLiveService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var ConnectedLiveService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PushMatrixBatch",
 			Handler:    _ConnectedLiveService_PushMatrixBatch_Handler,
+		},
+		{
+			MethodName: "GetMatrixBatch",
+			Handler:    _ConnectedLiveService_GetMatrixBatch_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

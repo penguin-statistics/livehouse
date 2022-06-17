@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/getsentry/sentry-go"
+	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
@@ -15,19 +16,28 @@ import (
 	"github.com/penguin-statistics/livehouse/internal/pkg/async"
 )
 
-func run(serv *grpc.Server, conf *config.Config, lc fx.Lifecycle) {
+func run(grpcserv *grpc.Server, httpserv *fiber.App, conf *config.Config, lc fx.Lifecycle) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			ln, err := net.Listen(conf.Network, conf.Address)
+			ln, err := net.Listen("tcp", conf.GRPCAddress)
 			if err != nil {
 				log.Fatal().Err(err).Msg("failed to listen")
 			}
 
 			go func() {
-				if err := serv.Serve(ln); err != nil {
+				if err := grpcserv.Serve(ln); err != nil {
 					log.Error().Err(err).Msg("server terminated unexpectedly")
 				}
 			}()
+
+			go func() {
+				if err := httpserv.Listen(conf.HTTPAddress); err != nil {
+					log.Error().Err(err).Msg("server terminated unexpectedly")
+				}
+			}()
+
+			log.Info().Msgf("started gRPC server on %s", conf.GRPCAddress)
+			log.Info().Msgf("started HTTP server on %s", conf.HTTPAddress)
 
 			return nil
 		},
@@ -40,21 +50,14 @@ func run(serv *grpc.Server, conf *config.Config, lc fx.Lifecycle) {
 				async.Errable(func() error {
 					log.Info().Msg("grpc server is shutting down")
 
-					ch := make(chan struct{})
-					go func() {
-						serv.GracefulStop()
-						close(ch)
-					}()
-
-					select {
-					case <-ch:
-						log.Info().Msg("grpc server shutdown complete")
-					case <-time.After(time.Second * 10):
-						log.Error().Msg("grpc server shutdown timed out. forcefully shutting down...")
-						serv.Stop()
-					}
+					grpcserv.GracefulStop()
 
 					return nil
+				}),
+				async.Errable(func() error {
+					log.Info().Msg("http server is shutting down")
+
+					return httpserv.Shutdown()
 				}),
 				async.Errable(func() error {
 					flushed := sentry.Flush(time.Second * 10)

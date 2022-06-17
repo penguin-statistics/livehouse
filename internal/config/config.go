@@ -9,11 +9,11 @@ import (
 )
 
 type Config struct {
-	// Network is the network to listen on.
-	Network string
+	// GRPCAddress is the address to bind the gRPC server to.
+	GRPCAddress string
 
-	// Address is the listen address would listen on.
-	Address string
+	// HTTPAddress is the address to bind the HTTP server to.
+	HTTPAddress string
 
 	// DevMode to indicate development mode. When true, the program would spin up utilities for debugging and
 	// provide a more contextual message when encountered a panic. See internal/server/httpserver/http.go for the
