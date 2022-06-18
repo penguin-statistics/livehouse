@@ -2,14 +2,19 @@ syntax = "proto3";
 
 option go_package = "github.com/penguin-statistics/livehouse/internal/model/pb";
 
-message Ping {
-    Header header = 1;
-    int32 sequence = 2;
+enum Language {
+  ZH_CN = 0;
+  EN_US = 1;
+  JA_JP = 2;
+  KO_KR = 3;
+  OTHER = 4;
 }
 
-message Pong {
-    Header header = 1;
-    int32 sequence = 2;
+enum Server {
+  CN = 0;
+  US = 1;
+  JP = 2;
+  KR = 3;
 }
 
 message Skeleton {
@@ -24,9 +29,11 @@ enum MessageType {
     // default value, leave for unknown
     UNKNOWN = 0;
     
-    // ping-pong messages
-    PING = 1;
-    PONG = 2;
+    PROBE_NAVIGATED = 1;
+    PROBE_ENTERED_SEARCH_RESULT = 2;
+    PROBE_EXECUTED_ADVANCED_QUERY = 3;
+
+    PROBE_SERVER_ACK = 64;
 
     // server push messages. start from 1 << 8
     /// uses MatrixUpdateMessage
@@ -40,39 +47,27 @@ enum MessageType {
 }
 
 message MatrixUpdateMessage {
-    message Segment {
-        message Element {
-            oneof id {
-                int32 stage_id = 1;
-                int32 item_id = 2;
-            }
-            // amount: absolute changed value under MATRIX_UPDATE_MESSAGE
-            int32 amount = 3;
-        }
-
-        oneof bucket {
-            int32 stage_id = 1;
-            int32 item_id = 2;
-        }
-        repeated Element elements = 3;
+    message Element {
+        uint32 stage_id = 1;
+        uint32 item_id = 2;
+        uint64 quantity = 3;
+        uint64 times = 4;
     }
 
     Header header = 1;
-    repeated Segment segments = 2;
+    repeated Element segments = 2;
 }
 
 message MatrixUpdateSubscribeReq {
     Header header = 1;
-    int32 sequence = 2;
     oneof id {
-        int32 stage_id = 3;
-        int32 item_id = 4;
+        uint32 stage_id = 2;
+        uint32 item_id = 3;
     }
 }
 
 message MatrixUpdateSubscribeResp {
     Header header = 1;
-    int32 sequence = 2;
 }
 
 

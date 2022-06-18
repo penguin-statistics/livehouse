@@ -1,9 +1,31 @@
 package lhcore
 
 import (
+	"strconv"
 	"sync"
 	"sync/atomic"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
+
+var (
+	ErrStageNotFound = errors.New("stage not found")
+	ErrItemNotFound  = errors.New("item not found")
+)
+
+type IDSet struct {
+	StageID uint32
+	ItemID  uint32
+}
+
+func (s IDSet) ID() uint64 {
+	return uint64(s.StageID)<<32 | uint64(s.ItemID)
+}
+
+func (s IDSet) GoString() string {
+	return "IDSet{StageID: " + strconv.FormatUint(uint64(s.StageID), 10) + ", ItemID: " + strconv.FormatUint(uint64(s.ItemID), 10) + "}"
+}
 
 type DropElementValue struct {
 	// secs are the subsections in which denotes the quantity of drops for
@@ -60,21 +82,30 @@ func (d *DropElementValue) recalcSum() {
 }
 
 type DropElement struct {
-	StageID uint32
-	ItemID  uint32
+	IDSet
 
 	// Values
 	Times    DropElementValue
 	Quantity DropElementValue
-}
 
-func (e *DropElement) ID() uint64 {
-	return uint64(e.StageID)<<32 | uint64(e.ItemID)
+	// Subscriptions
+	Subscriptions sync.Map
 }
 
 func (e *DropElement) Incr(times, quantity, generation uint64) {
 	e.Times.Incr(times, generation)
 	e.Quantity.Incr(quantity, generation)
+
+	liteval := &LiteValue{
+		Times:    times,
+		Quantity: quantity,
+	}
+	log.Debug().Interface("liteval", liteval).Msg("Incr")
+	e.Subscriptions.Range(func(key, value any) bool {
+		log.Debug().Msgf("Sending litevalue to sub %s", value.(*Sub).ClientID)
+		value.(*Sub).Set(e.IDSet, liteval)
+		return true
+	})
 }
 
 func (e *DropElement) CutOut(times, quantity, generation uint64) {
@@ -82,24 +113,116 @@ func (e *DropElement) CutOut(times, quantity, generation uint64) {
 	e.Quantity.CutOut(quantity, generation)
 }
 
+func (e *DropElement) AddSub(sub *Sub) {
+	e.Subscriptions.Store(sub.ClientID, sub)
+}
+
+func (e *DropElement) RemoveSub(sub *Sub) {
+	e.Subscriptions.Delete(sub.ClientID)
+}
+
 type DropSet struct {
-	CombineElements sync.Map
-	StageElements   sync.Map
-	ItemElements    sync.Map
+	mu sync.Mutex
+
+	CombineElements map[uint64]*DropElement
+	StageElements   map[uint32][]*DropElement
+	ItemElements    map[uint32][]*DropElement
 }
 
 func NewDropSet() *DropSet {
-	return &DropSet{}
+	return &DropSet{
+		CombineElements: make(map[uint64]*DropElement),
+		StageElements:   make(map[uint32][]*DropElement),
+		ItemElements:    make(map[uint32][]*DropElement),
+	}
 }
 
-func (d *DropSet) GetOrCreateElement(stageID, itemID uint32) *DropElement {
-	element := &DropElement{
-		StageID: stageID,
-		ItemID:  itemID,
-	}
-	actual, _ := d.CombineElements.LoadOrStore(element.ID(), element)
-	d.StageElements.Store(stageID, actual)
-	d.ItemElements.Store(itemID, actual)
+func (d *DropSet) GetOrCreateElement(idset IDSet) *DropElement {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 
-	return actual.(*DropElement)
+	element := &DropElement{
+		IDSet: idset,
+	}
+
+	actual, ok := d.CombineElements[idset.ID()]
+	if !ok {
+		d.CombineElements[idset.ID()] = element
+		actual = element
+	}
+
+	stageEl, ok := d.StageElements[idset.StageID]
+	if !ok {
+		made := []*DropElement{element}
+		d.StageElements[idset.StageID] = made
+		stageEl = made
+	} else {
+		d.StageElements[idset.StageID] = append(stageEl, element)
+	}
+
+	itemEl, ok := d.ItemElements[idset.ItemID]
+	if !ok {
+		made := []*DropElement{element}
+		d.ItemElements[idset.ItemID] = made
+		itemEl = made
+	} else {
+		d.ItemElements[idset.ItemID] = append(itemEl, element)
+	}
+
+	return actual
+}
+
+func (d *DropSet) ReplaceSubToStageElements(stageID uint32, sub *Sub) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	d.removeSub(sub)
+
+	elements, ok := d.StageElements[stageID]
+	if !ok {
+		return ErrStageNotFound
+	}
+
+	log.Debug().Interface("elements", elements).Msg("ReplaceSubToStageElements")
+
+	for _, element := range elements {
+		log.Debug().Interface("element", element).Msg("ReplaceSubToStageElements")
+		element.AddSub(sub)
+	}
+
+	return nil
+}
+
+func (d *DropSet) ReplaceSubToItemElements(itemID uint32, sub *Sub) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	d.removeSub(sub)
+
+	elements, ok := d.ItemElements[itemID]
+	if !ok {
+		return ErrItemNotFound
+	}
+
+	log.Debug().Interface("elements", elements).Msg("ReplaceSubToItemElements")
+
+	for _, element := range elements {
+		log.Debug().Interface("element", element).Msg("ReplaceSubToItemElements")
+		element.AddSub(sub)
+	}
+
+	return nil
+}
+
+func (d *DropSet) removeSub(sub *Sub) {
+	for _, element := range d.CombineElements {
+		element.RemoveSub(sub)
+	}
+}
+
+func (d *DropSet) RemoveSub(sub *Sub) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	d.removeSub(sub)
 }

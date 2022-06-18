@@ -64,14 +64,14 @@ func (h *Hub) Broadcast(msg *ws.PreparedMessage) {
 	})
 }
 
-func (h *Hub) NewClient(conn *websocket.Conn) *Client {
+func (h *Hub) NewClient(conn *websocket.Conn, id string) *Client {
 	c := &Client{
 		Conn: conn,
 		Send: make(chan *ws.PreparedMessage, 8),
 		Recv: make(chan []byte, 2),
 		Done: make(chan struct{}),
 		Hub:  h,
-		ID:   conn.Locals("requestid").(string),
+		ID:   id,
 	}
 	h.Add(c)
 	return c
@@ -118,14 +118,7 @@ func (c *Client) readPump() {
 	for {
 		_, message, err := c.Conn.ReadMessage()
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Debug().Err(err).Msg("readPump: expected close")
-			} else {
-				log.Warn().Err(err).Msg("readPump: error")
-				c.SendClose()
-			}
-
-			break
+			return
 		}
 		c.Recv <- message
 	}
@@ -141,10 +134,8 @@ func (c *Client) writePump() {
 	for {
 		select {
 		case message, ok := <-c.Send:
-			c.Conn.SetWriteDeadline(time.Now().Add(c.Hub.Config.WriteWait))
 			if !ok {
 				// The hub closed the channel.
-				c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
 
@@ -171,8 +162,11 @@ func (c *Client) SendClose() error {
 
 func (c *Client) Destroy() {
 	c.destroyOnce.Do(func() {
+		log.Info().Str("clientId", c.ID).Msg("closing client")
 		c.Hub.Remove(c)
 		c.Conn.Close()
 		close(c.Done)
+		close(c.Send)
+		close(c.Recv)
 	})
 }

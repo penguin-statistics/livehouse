@@ -38,7 +38,10 @@ func (c *Intake) PushReportBatch(ctx context.Context, req *pb.ReportBatchRequest
 
 	for _, report := range req.GetReport() {
 		for _, drops := range report.GetDrops() {
-			el := c.DropSet.GetOrCreateElement(report.GetStageId(), drops.GetItemId())
+			el := c.DropSet.GetOrCreateElement(lhcore.IDSet{
+				StageID: report.GetStageId(),
+				ItemID:  drops.GetItemId(),
+			})
 			el.Incr(1, drops.GetQuantity(), report.GetGeneration())
 		}
 	}
@@ -55,7 +58,10 @@ func (c *Intake) PushMatrixBatch(ctx context.Context, req *pb.MatrixBatchRequest
 		Msgf("received matrix batch")
 
 	for _, matrix := range req.GetMatrix() {
-		el := c.DropSet.GetOrCreateElement(matrix.GetStageId(), matrix.GetItemId())
+		el := c.DropSet.GetOrCreateElement(lhcore.IDSet{
+			StageID: matrix.GetStageId(),
+			ItemID:  matrix.GetItemId(),
+		})
 		el.CutOut(matrix.GetTimes(), matrix.GetQuantity(), req.GetGeneration())
 	}
 
@@ -65,11 +71,9 @@ func (c *Intake) PushMatrixBatch(ctx context.Context, req *pb.MatrixBatchRequest
 }
 
 func (c *Intake) GetMatrixBatch(ctx context.Context, req *pb.Empty) (*pb.Empty, error) {
-	c.DropSet.CombineElements.Range(func(key, value any) bool {
-		el := value.(*lhcore.DropElement)
+	for _, el := range c.DropSet.CombineElements {
 		fmt.Printf("stage: %d, item: %d | times: %d, quantity: %d\n", el.StageID, el.ItemID, el.Times.Sum(), el.Quantity.Sum())
-		return true
-	})
+	}
 
 	return &pb.Empty{}, nil
 }
