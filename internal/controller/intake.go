@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
@@ -68,12 +67,4 @@ func (c *Intake) PushMatrixBatch(ctx context.Context, req *pb.MatrixBatchRequest
 	return &pb.MatrixBatchACK{
 		Generation: req.Generation,
 	}, nil
-}
-
-func (c *Intake) GetMatrixBatch(ctx context.Context, req *pb.Empty) (*pb.Empty, error) {
-	for _, el := range c.DropSet.CombineElements {
-		fmt.Printf("stage: %d, item: %d | times: %d, quantity: %d\n", el.StageID, el.ItemID, el.Times.Sum(), el.Quantity.Sum())
-	}
-
-	return &pb.Empty{}, nil
 }

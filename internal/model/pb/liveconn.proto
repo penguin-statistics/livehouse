@@ -5,7 +5,6 @@ option go_package = "github.com/penguin-statistics/livehouse/internal/model/pb";
 service ConnectedLiveService {
     rpc PushReportBatch(ReportBatchRequest) returns (ReportBatchACK) {}
     rpc PushMatrixBatch(MatrixBatchRequest) returns (MatrixBatchACK) {}
-    rpc GetMatrixBatch(Empty) returns (Empty) {}
 }
 
 message ReportBatchRequest {
@@ -23,8 +22,7 @@ message Drop {
     uint64 quantity = 2;
 }
 
-message ReportBatchACK {
-}
+message ReportBatchACK {}
 
 message MatrixBatchRequest {
     uint64 generation = 1;
@@ -41,5 +39,3 @@ message Matrix {
 message MatrixBatchACK {
     uint64 generation = 1;
 }
-
-message Empty {}

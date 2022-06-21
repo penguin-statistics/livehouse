@@ -47,15 +47,15 @@ func (d *DropElementValue) Sum() uint64 {
 	return atomic.LoadUint64(&d.sum)
 }
 
-func (d *DropElementValue) Incr(delta, generation uint64) {
+func (d *DropElementValue) Incr(delta, generation uint64) uint64 {
 	currentGen := atomic.LoadUint64(&d.gen)
 	if generation < currentGen {
-		return
+		return atomic.LoadUint64(&d.sum)
 	}
 	atomic.AddUint64(&d.sum, delta)
 	initval := uint64(0)
 	subsection, _ := d.secs.LoadOrStore(generation, &initval)
-	atomic.AddUint64(subsection.(*uint64), delta)
+	return atomic.AddUint64(subsection.(*uint64), delta)
 }
 
 func (d *DropElementValue) CutOut(value, generation uint64) {
@@ -93,16 +93,19 @@ type DropElement struct {
 }
 
 func (e *DropElement) Incr(times, quantity, generation uint64) {
-	e.Times.Incr(times, generation)
-	e.Quantity.Incr(quantity, generation)
+	incrT := e.Times.Incr(times, generation)
+	incrQ := e.Quantity.Incr(quantity, generation)
 
 	liteval := &LiteValue{
-		Times:    times,
-		Quantity: quantity,
+		Times:    incrT,
+		Quantity: incrQ,
 	}
-	log.Debug().Interface("liteval", liteval).Msg("Incr")
 	e.Subscriptions.Range(func(key, value any) bool {
-		log.Debug().Msgf("Sending litevalue to sub %s", value.(*Sub).ClientID)
+		log.Trace().
+			Str("clientId", value.(*Sub).ClientID).
+			Interface("idset", e.IDSet).
+			Interface("liteValue", liteval).
+			Msgf("sending litevalue")
 		value.(*Sub).Set(e.IDSet, liteval)
 		return true
 	})
@@ -125,15 +128,15 @@ type DropSet struct {
 	mu sync.Mutex
 
 	CombineElements map[uint64]*DropElement
-	StageElements   map[uint32][]*DropElement
-	ItemElements    map[uint32][]*DropElement
+	StageElements   map[uint32]map[uint32]*DropElement
+	ItemElements    map[uint32]map[uint32]*DropElement
 }
 
 func NewDropSet() *DropSet {
 	return &DropSet{
 		CombineElements: make(map[uint64]*DropElement),
-		StageElements:   make(map[uint32][]*DropElement),
-		ItemElements:    make(map[uint32][]*DropElement),
+		StageElements:   make(map[uint32]map[uint32]*DropElement),
+		ItemElements:    make(map[uint32]map[uint32]*DropElement),
 	}
 }
 
@@ -141,32 +144,31 @@ func (d *DropSet) GetOrCreateElement(idset IDSet) *DropElement {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
+	actual, ok := d.CombineElements[idset.ID()]
+	if ok {
+		return actual
+	}
+
 	element := &DropElement{
 		IDSet: idset,
 	}
+	d.CombineElements[idset.ID()] = element
+	actual = element
 
-	actual, ok := d.CombineElements[idset.ID()]
+	_, ok = d.StageElements[idset.StageID]
 	if !ok {
-		d.CombineElements[idset.ID()] = element
-		actual = element
-	}
-
-	stageEl, ok := d.StageElements[idset.StageID]
-	if !ok {
-		made := []*DropElement{element}
+		made := map[uint32]*DropElement{idset.ItemID: element}
 		d.StageElements[idset.StageID] = made
-		stageEl = made
 	} else {
-		d.StageElements[idset.StageID] = append(stageEl, element)
+		d.StageElements[idset.StageID][idset.ItemID] = element
 	}
 
-	itemEl, ok := d.ItemElements[idset.ItemID]
+	_, ok = d.ItemElements[idset.ItemID]
 	if !ok {
-		made := []*DropElement{element}
+		made := map[uint32]*DropElement{idset.StageID: element}
 		d.ItemElements[idset.ItemID] = made
-		itemEl = made
 	} else {
-		d.ItemElements[idset.ItemID] = append(itemEl, element)
+		d.ItemElements[idset.ItemID][idset.StageID] = element
 	}
 
 	return actual
