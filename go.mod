@@ -7,8 +7,9 @@ require (
 	github.com/fasthttp/websocket v1.5.0
 	github.com/getsentry/sentry-go v0.13.0
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/gofiber/fiber/v2 v2.34.1
-	github.com/gofiber/websocket/v2 v2.0.22
+	github.com/gofiber/fiber/v2 v2.36.0
+	github.com/gofiber/helmet/v2 v2.2.13
+	github.com/gofiber/websocket/v2 v2.0.24
 	github.com/joho/godotenv v1.4.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/nats-io/nats.go v1.16.0
@@ -26,7 +27,6 @@ require (
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/gofiber/helmet/v2 v2.2.13 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
@@ -39,7 +39,7 @@ require (
 	github.com/savsgio/gotils v0.0.0-20220530130905-52f3993e8d6d // indirect
 	github.com/stretchr/testify v1.7.2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.37.0 // indirect
+	github.com/valyala/fasthttp v1.38.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20220607223854-30acc4cbd2aa // indirect
