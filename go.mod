@@ -17,7 +17,7 @@ require (
 	github.com/prometheus/client_golang v1.12.2
 	github.com/rs/xid v1.4.0
 	github.com/rs/zerolog v1.27.0
-	go.uber.org/fx v1.17.1
+	go.uber.org/fx v1.18.1
 	golang.org/x/exp v0.0.0-20220428152302-39d4317da171
 	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.1
@@ -54,7 +54,7 @@ require (
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	go.uber.org/atomic v1.7.0 // indirect
-	go.uber.org/dig v1.14.0 // indirect
+	go.uber.org/dig v1.15.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
