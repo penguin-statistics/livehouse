@@ -20,6 +20,9 @@ type Config struct {
 	// actual implementation details.
 	DevMode bool `split_words:"true"`
 
+	// LogJsonStdout is whether to log JSON logs (instead of pretty-print logs) to stdout for the ease of log collection.
+	LogJsonStdout bool `split_words:"true" default:"false"`
+
 	// TracingEnabled to indicate whether to enable OpenTelemetry tracing.
 	TracingEnabled bool `split_words:"true"`
 
