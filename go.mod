@@ -9,7 +9,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gofiber/fiber/v2 v2.37.0
 	github.com/gofiber/helmet/v2 v2.2.16
-	github.com/gofiber/websocket/v2 v2.0.24
+	github.com/gofiber/websocket/v2 v2.0.25
 	github.com/joho/godotenv v1.4.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/nats-io/nats.go v1.16.0
