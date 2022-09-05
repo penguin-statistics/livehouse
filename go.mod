@@ -16,7 +16,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.13.0
 	github.com/rs/xid v1.4.0
-	github.com/rs/zerolog v1.27.0
+	github.com/rs/zerolog v1.28.0
 	go.uber.org/fx v1.18.1
 	golang.org/x/exp v0.0.0-20220428152302-39d4317da171
 	google.golang.org/grpc v1.48.0
