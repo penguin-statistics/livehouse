@@ -19,7 +19,7 @@ require (
 	github.com/rs/zerolog v1.28.0
 	go.uber.org/fx v1.18.2
 	golang.org/x/exp v0.0.0-20220428152302-39d4317da171
-	google.golang.org/grpc v1.49.0
+	google.golang.org/grpc v1.50.0
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
