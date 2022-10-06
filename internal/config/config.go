@@ -26,6 +26,14 @@ type Config struct {
 	// TracingEnabled to indicate whether to enable OpenTelemetry tracing.
 	TracingEnabled bool `split_words:"true"`
 
+	// TracingExporters to indicate which exporters to use for tracing.
+	// Valid values are: jaeger, otlp, stdout (for debug).
+	TracingExporters []string `split_words:"true" default:"jaeger"`
+
+	// TracingSampleRate to indicate the sampling rate for tracing.
+	// Valid values are: 0.0 (disabled), 1.0 (all traces), or a value between 0.0 and 1.0 (sampling rate).
+	TracingSampleRate float64 `split_words:"true" default:"1.0"`
+
 	// infrastructure components connection instructions
 
 	// NatsURL is the URL of the NATS server. See https://pkg.go.dev/github.com/nats-io/nats.go#Connect

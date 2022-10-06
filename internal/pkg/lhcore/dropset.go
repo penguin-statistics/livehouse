@@ -29,7 +29,7 @@ func (s IDSet) GoString() string {
 
 type DropElementValue struct {
 	// secs are the subsections in which denotes the quantity of drops for
-	// different geenrations
+	// different generations
 	secs sync.Map
 
 	sync.RWMutex
@@ -188,7 +188,6 @@ func (d *DropSet) ReplaceSubToStageElements(stageID uint32, sub *Sub) error {
 	log.Debug().Interface("elements", elements).Msg("ReplaceSubToStageElements")
 
 	for _, element := range elements {
-		log.Debug().Interface("element", element).Msg("ReplaceSubToStageElements")
 		element.AddSub(sub)
 	}
 

@@ -31,7 +31,7 @@ func RegisterIntake(serv *grpc.Server, deps IntakeDeps) {
 }
 
 func (c *Intake) PushReportBatch(ctx context.Context, req *pb.ReportBatchRequest) (*pb.ReportBatchACK, error) {
-	log.Info().
+	log.Trace().
 		Interface("request", req).
 		Msgf("received report batch")
 

@@ -3,7 +3,6 @@ package controller
 import (
 	"time"
 
-	ws "github.com/fasthttp/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 	"github.com/rs/zerolog/log"
@@ -11,10 +10,7 @@ import (
 
 	"github.com/penguin-statistics/livehouse/internal/constant"
 	"github.com/penguin-statistics/livehouse/internal/service"
-	"github.com/penguin-statistics/livehouse/internal/util"
 )
-
-var InvalidSubprotocolMsg = util.Must(ws.NewPreparedMessage(websocket.CloseMessage, []byte("invalid subprotocol: expect subprotocol "+constant.LiveWebSocketSubprotocol)))
 
 type LiveDeps struct {
 	fx.In
@@ -47,8 +43,12 @@ func (c *Live) Handle(ctx *fiber.Ctx) error {
 	f := websocket.New(func(conn *websocket.Conn) {
 		if conn.Subprotocol() != constant.LiveWebSocketSubprotocol {
 			log.Warn().Str("subprotocol", conn.Subprotocol()).Msg("invalid subprotocol")
-			conn.SetWriteDeadline(time.Now().Add(time.Second * 10))
-			err := conn.WritePreparedMessage(InvalidSubprotocolMsg)
+			err := conn.WriteMessage(websocket.TextMessage, []byte("invalid subprotocol: expect subprotocol "+constant.LiveWebSocketSubprotocol))
+			if err != nil {
+				log.Error().Err(err).Msg("failed to write message")
+			}
+
+			err = conn.WriteControl(websocket.CloseMessage, []byte("invalid subprotocol: expect subprotocol "+constant.LiveWebSocketSubprotocol), time.Now().Add(time.Second*10))
 			if err != nil {
 				log.Error().Err(err).Msg("failed to write invalid subprotocol message")
 			}

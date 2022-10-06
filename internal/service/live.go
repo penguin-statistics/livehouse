@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	ws "github.com/fasthttp/websocket"
 	"github.com/gofiber/websocket/v2"
 	"github.com/rs/zerolog/log"
@@ -30,33 +29,33 @@ func NewLive(dropSet *lhcore.DropSet, hub *wshub.Hub) *Live {
 func (l *Live) Handle(c *websocket.Conn) {
 	log.Info().Msg("new live connection")
 
-	{
-		item, err := proto.Marshal(&pb.MatrixUpdateSubscribeReq{
-			Header: &pb.Header{
-				Type: pb.MessageType_MATRIX_UPDATE_SUBSCRIBE_REQ,
-			},
-			Id: &pb.MatrixUpdateSubscribeReq_ItemId{
-				ItemId: 1,
-			},
-		})
-		log.Debug().
-			Err(err).
-			Str("base64", base64.StdEncoding.EncodeToString(item)).
-			Msg("example proto message: update subscription with itemId = 1")
+	// {
+	// 	item, err := proto.Marshal(&pb.MatrixUpdateSubscribeReq{
+	// 		Header: &pb.Header{
+	// 			Type: pb.MessageType_MATRIX_UPDATE_SUBSCRIBE_REQ,
+	// 		},
+	// 		Id: &pb.MatrixUpdateSubscribeReq_ItemId{
+	// 			ItemId: 1,
+	// 		},
+	// 	})
+	// 	log.Debug().
+	// 		Err(err).
+	// 		Str("base64", base64.StdEncoding.EncodeToString(item)).
+	// 		Msg("example proto message: update subscription with itemId = 1")
 
-		stage, err := proto.Marshal(&pb.MatrixUpdateSubscribeReq{
-			Header: &pb.Header{
-				Type: pb.MessageType_MATRIX_UPDATE_SUBSCRIBE_REQ,
-			},
-			Id: &pb.MatrixUpdateSubscribeReq_StageId{
-				StageId: 1,
-			},
-		})
-		log.Debug().
-			Err(err).
-			Str("base64", base64.StdEncoding.EncodeToString(stage)).
-			Msg("example proto message: update subscription with stageId = 1")
-	}
+	// 	stage, err := proto.Marshal(&pb.MatrixUpdateSubscribeReq{
+	// 		Header: &pb.Header{
+	// 			Type: pb.MessageType_MATRIX_UPDATE_SUBSCRIBE_REQ,
+	// 		},
+	// 		Id: &pb.MatrixUpdateSubscribeReq_StageId{
+	// 			StageId: 1,
+	// 		},
+	// 	})
+	// 	log.Debug().
+	// 		Err(err).
+	// 		Str("base64", base64.StdEncoding.EncodeToString(stage)).
+	// 		Msg("example proto message: update subscription with stageId = 1")
+	// }
 
 	id := c.Locals("requestid").(string)
 	log.Info().Str("clientId", id).Msg("connected")
@@ -85,7 +84,10 @@ func (l *Live) Handle(c *websocket.Conn) {
 				continue
 			}
 
-			spew.Dump(req.Id)
+			var resp pb.MatrixUpdateSubscribeResp
+			resp.Header = &pb.Header{
+				Type: pb.MessageType_MATRIX_UPDATE_SUBSCRIBE_RESP,
+			}
 
 			switch {
 			case req.GetItemId() != 0:
@@ -96,6 +98,7 @@ func (l *Live) Handle(c *websocket.Conn) {
 				err := l.DropSet.ReplaceSubToItemElements(req.GetItemId(), sub)
 				if err != nil {
 					log.Error().Err(err).Msg("failed to replace subscription to item elements")
+					resp.Error = "failed to replace subscription to item elements: " + err.Error()
 					continue
 				}
 			case req.GetStageId() != 0:
@@ -106,10 +109,12 @@ func (l *Live) Handle(c *websocket.Conn) {
 				err := l.DropSet.ReplaceSubToStageElements(req.GetStageId(), sub)
 				if err != nil {
 					log.Error().Err(err).Msg("failed to replace subscription to stage elements")
+					resp.Error = "failed to replace subscription to stage elements: " + err.Error()
 					continue
 				}
 			default:
-				log.Warn().Msg("failed to determine update subscription request: both stageId & itemId is zero-value")
+				log.Warn().Msg("failed to determine update subscription request: both stageId & itemId are zero-value")
+				resp.Error = "failed to determine update subscription request: both stageId & itemId are zero-value"
 				continue
 			}
 		}
@@ -121,10 +126,11 @@ func (l *Live) Handle(c *websocket.Conn) {
 		for {
 			select {
 			case <-timer.C:
-				log.Debug().Str("clientId", cl.ID).Msg("send update")
+				log.Debug().Str("clientId", cl.ID).Msg("flushing updates")
 
 				elements := sub.Flush()
 				if len(elements) == 0 {
+					log.Debug().Str("clientId", cl.ID).Msg("no updates to flush")
 					continue
 				}
 
