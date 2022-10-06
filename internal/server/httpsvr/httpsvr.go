@@ -53,16 +53,18 @@ func Create(conf *config.Config) *fiber.App {
 		app.Use(pprof.New())
 	}
 
-	app.Use(limiter.New(limiter.Config{
-		Expiration: time.Minute,
-		Max:        10,
-		LimitReached: func(c *fiber.Ctx) error {
-			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
-				"code":    "TOO_MANY_REQUESTS",
-				"message": "Your client is sending requests too frequently. Consult X-RateLimit-Limit and X-RateLimit-Remaining headers for details on your current rate limitation status.",
-			})
-		},
-	}))
+	if conf.LimiterEnabled {
+		app.Use(limiter.New(limiter.Config{
+			Expiration: time.Minute,
+			Max:        10,
+			LimitReached: func(c *fiber.Ctx) error {
+				return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+					"code":    "TOO_MANY_REQUESTS",
+					"message": "Your client is sending requests too frequently. Consult X-RateLimit-Limit and X-RateLimit-Remaining headers for details on your current rate limitation status.",
+				})
+			},
+		}))
+	}
 
 	app.Use(requestid.New(requestid.Config{
 		Header:     "X-Penguin-Request-ID",

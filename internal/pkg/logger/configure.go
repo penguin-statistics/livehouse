@@ -19,11 +19,19 @@ func Configure(conf *config.Config) {
 
 	_ = os.Mkdir("logs", os.ModePerm)
 
-	var level zerolog.Level
-	if conf.DevMode {
-		level = zerolog.TraceLevel
-	} else {
-		level = zerolog.DebugLevel
+	zerologLogLevelMap := map[string]zerolog.Level{
+		"debug": zerolog.DebugLevel,
+		"info":  zerolog.InfoLevel,
+		"warn":  zerolog.WarnLevel,
+		"error": zerolog.ErrorLevel,
+		"fatal": zerolog.FatalLevel,
+		"panic": zerolog.PanicLevel,
+		"trace": zerolog.TraceLevel,
+	}
+
+	level, ok := zerologLogLevelMap[conf.LogLevel]
+	if !ok {
+		level = zerolog.InfoLevel
 	}
 
 	var writer io.Writer

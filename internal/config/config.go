@@ -20,6 +20,12 @@ type Config struct {
 	// actual implementation details.
 	DevMode bool `split_words:"true"`
 
+	// LimiterEnabled to indicate whether the rate limiter should be enabled.
+	LimiterEnabled bool `split_words:"true"`
+
+	// LogLevel is the log level to use. Valid values are "debug", "info", "warn", "error", "fatal", "panic".
+	LogLevel string `split_words:"true" default:"info" required:"true"`
+
 	// LogJsonStdout is whether to log JSON logs (instead of pretty-print logs) to stdout for the ease of log collection.
 	LogJsonStdout bool `split_words:"true" default:"false"`
 
