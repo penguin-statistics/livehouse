@@ -21,9 +21,9 @@ type IDSet struct {
 }
 
 func (s IDSet) ID() uint64 {
-	// give ServerID 4 bits (16 servers supported), StageID 28 bits (268435456 stages supported), ItemID 28 bits (268435456 items supported) so that ServerID with any one of StageID or ItemID can be combined into uint32 without collision
+	// give ServerID 4 bits (16 servers supported), StageID 28 bits (268435456 stages supported), ItemID 28 bits (268435456 items supported) so that ServerID with any one of StageID or ItemID can be combined into uint32 without collision. The most significant 4 bits are reserved for future use.
 	// putting serverID in the highest bits to make it easier for sorting and more friendly for hashmap
-	return uint64(s.ServerID)<<60 | uint64(s.StageID)<<30 | uint64(s.ItemID)
+	return uint64(s.ServerID)<<56 | uint64(s.StageID)<<28 | uint64(s.ItemID)
 }
 
 func (s IDSet) StagePair() IDPair {
