@@ -8,7 +8,7 @@ require (
 	github.com/getsentry/sentry-go v0.14.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gofiber/fiber/v2 v2.38.1
-	github.com/gofiber/helmet/v2 v2.2.16
+	github.com/gofiber/helmet/v2 v2.2.17
 	github.com/gofiber/websocket/v2 v2.1.0
 	github.com/joho/godotenv v1.4.0
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -17,6 +17,8 @@ require (
 	github.com/prometheus/client_golang v1.13.0
 	github.com/rs/xid v1.4.0
 	github.com/rs/zerolog v1.28.0
+	github.com/samber/lo v1.30.1
+	github.com/tidwall/gjson v1.14.3
 	go.uber.org/fx v1.18.2
 	golang.org/x/exp v0.0.0-20220428152302-39d4317da171
 	google.golang.org/grpc v1.50.0
@@ -36,10 +38,8 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
-	github.com/samber/lo v1.30.1 // indirect
 	github.com/savsgio/gotils v0.0.0-20220530130905-52f3993e8d6d // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
-	github.com/tidwall/gjson v1.14.3 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
