@@ -6,8 +6,7 @@ import (
 )
 
 type Element struct {
-	StageID uint32
-	ItemID  uint32
+	IDSet
 
 	LiteValue
 }
@@ -56,8 +55,7 @@ func (s *Sub) Flush() []Element {
 	buf := s.Swap()
 	buf.Range(func(key, value any) bool {
 		elements = append(elements, Element{
-			StageID: key.(IDSet).StageID,
-			ItemID:  key.(IDSet).ItemID,
+			IDSet: key.(IDSet),
 			LiteValue: LiteValue{
 				Quantity: value.(*LiteValue).Quantity,
 				Times:    value.(*LiteValue).Times,

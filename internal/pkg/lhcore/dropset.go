@@ -15,16 +15,43 @@ var (
 )
 
 type IDSet struct {
-	StageID uint32
-	ItemID  uint32
+	ServerID uint8
+	StageID  uint32
+	ItemID   uint32
 }
 
 func (s IDSet) ID() uint64 {
-	return uint64(s.StageID)<<32 | uint64(s.ItemID)
+	// give ServerID 4 bits (16 servers supported), StageID 28 bits (268435456 stages supported), ItemID 28 bits (268435456 items supported) so that ServerID with any one of StageID or ItemID can be combined into uint32 without collision
+	// putting serverID in the highest bits to make it easier for sorting and more friendly for hashmap
+	return uint64(s.ServerID)<<60 | uint64(s.StageID)<<30 | uint64(s.ItemID)
+}
+
+func (s IDSet) StagePair() IDPair {
+	return IDPair{
+		ServerID: s.ServerID,
+		EntityID: s.StageID,
+	}
+}
+
+func (s IDSet) ItemPair() IDPair {
+	return IDPair{
+		ServerID: s.ServerID,
+		EntityID: s.ItemID,
+	}
 }
 
 func (s IDSet) GoString() string {
-	return "IDSet{StageID: " + strconv.FormatUint(uint64(s.StageID), 10) + ", ItemID: " + strconv.FormatUint(uint64(s.ItemID), 10) + "}"
+	return "IDSet{StageID: " + strconv.FormatUint(uint64(s.StageID), 10) + ", ItemID: " + strconv.FormatUint(uint64(s.ItemID), 10) + ", ServerID: " + strconv.FormatUint(uint64(s.ServerID), 10) + "}"
+}
+
+type IDPair struct {
+	ServerID uint8
+	EntityID uint32
+}
+
+func (p IDPair) ID() uint32 {
+	// give ServerID 4 bits (16 servers supported), EntityID 28 bits (268435456 entities supported) so that ServerID with EntityID can be combined into uint32 without collision
+	return uint32(p.ServerID)<<28 | p.EntityID
 }
 
 type DropElementValue struct {
@@ -155,32 +182,36 @@ func (d *DropSet) GetOrCreateElement(idset IDSet) *DropElement {
 	d.CombineElements[idset.ID()] = element
 	actual = element
 
-	_, ok = d.StageElements[idset.StageID]
+	spairId := idset.StagePair().ID()
+	ipairId := idset.ItemPair().ID()
+
+	_, ok = d.StageElements[spairId]
 	if !ok {
 		made := map[uint32]*DropElement{idset.ItemID: element}
-		d.StageElements[idset.StageID] = made
+		d.StageElements[spairId] = made
 	} else {
-		d.StageElements[idset.StageID][idset.ItemID] = element
+		d.StageElements[spairId][idset.ItemID] = element
 	}
 
-	_, ok = d.ItemElements[idset.ItemID]
+	_, ok = d.ItemElements[ipairId]
 	if !ok {
 		made := map[uint32]*DropElement{idset.StageID: element}
-		d.ItemElements[idset.ItemID] = made
+		d.ItemElements[ipairId] = made
 	} else {
-		d.ItemElements[idset.ItemID][idset.StageID] = element
+		d.ItemElements[ipairId][idset.StageID] = element
 	}
 
 	return actual
 }
 
-func (d *DropSet) ReplaceSubToStageElements(stageID uint32, sub *Sub) error {
+func (d *DropSet) ReplaceSubToStageElements(stageID uint32, server uint8, sub *Sub) error {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
 	d.removeSub(sub)
 
-	elements, ok := d.StageElements[stageID]
+	pair := IDPair{ServerID: server, EntityID: stageID}
+	elements, ok := d.StageElements[pair.ID()]
 	if !ok {
 		return ErrStageNotFound
 	}
@@ -194,13 +225,14 @@ func (d *DropSet) ReplaceSubToStageElements(stageID uint32, sub *Sub) error {
 	return nil
 }
 
-func (d *DropSet) ReplaceSubToItemElements(itemID uint32, sub *Sub) error {
+func (d *DropSet) ReplaceSubToItemElements(itemID uint32, server uint8, sub *Sub) error {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
 	d.removeSub(sub)
 
-	elements, ok := d.ItemElements[itemID]
+	pair := IDPair{ServerID: server, EntityID: itemID}
+	elements, ok := d.ItemElements[pair.ID()]
 	if !ok {
 		return ErrItemNotFound
 	}

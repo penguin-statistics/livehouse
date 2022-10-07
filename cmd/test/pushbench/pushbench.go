@@ -48,6 +48,8 @@ func randomInSlice(slice []uint32) uint32 {
 	return slice[rand.Intn(len(slice))]
 }
 
+var Servers = []pb.Server{pb.Server_CN, pb.Server_US, pb.Server_JP, pb.Server_KR}
+
 func main() {
 	conn, err := grpc.Dial("localhost:9015", grpc.WithInsecure())
 	if err != nil {
@@ -78,6 +80,7 @@ func main() {
 			}
 
 			req.Report[i] = &pb.Report{
+				Server:  Servers[rand.Intn(len(Servers))],
 				StageId: randomInSlice(stages),
 				Drops:   drops,
 			}

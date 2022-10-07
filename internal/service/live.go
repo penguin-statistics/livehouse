@@ -11,6 +11,7 @@ import (
 
 	"github.com/penguin-statistics/livehouse/internal/model/pb"
 	"github.com/penguin-statistics/livehouse/internal/pkg/lhcore"
+	"github.com/penguin-statistics/livehouse/internal/pkg/pgconv"
 	"github.com/penguin-statistics/livehouse/internal/pkg/wshub"
 )
 
@@ -95,7 +96,7 @@ func (l *Live) Handle(c *websocket.Conn) {
 					Uint32("itemId", req.GetItemId()).
 					Msg("replace subscription to item elements")
 
-				err := l.DropSet.ReplaceSubToItemElements(req.GetItemId(), sub)
+				err := l.DropSet.ReplaceSubToItemElements(req.GetItemId(), pgconv.ServerIDFPBE(req.Server), sub)
 				if err != nil {
 					log.Error().Err(err).Msg("failed to replace subscription to item elements")
 					resp.Error = "failed to replace subscription to item elements: " + err.Error()
@@ -106,7 +107,7 @@ func (l *Live) Handle(c *websocket.Conn) {
 					Uint32("stageId", req.GetStageId()).
 					Msg("replace subscription to stage elements")
 
-				err := l.DropSet.ReplaceSubToStageElements(req.GetStageId(), sub)
+				err := l.DropSet.ReplaceSubToStageElements(req.GetStageId(), pgconv.ServerIDFPBE(req.Server), sub)
 				if err != nil {
 					log.Error().Err(err).Msg("failed to replace subscription to stage elements")
 					resp.Error = "failed to replace subscription to stage elements: " + err.Error()
@@ -137,6 +138,7 @@ func (l *Live) Handle(c *websocket.Conn) {
 				msgels := make([]*pb.MatrixUpdateMessage_Element, 0, len(elements))
 				for _, e := range elements {
 					msgels = append(msgels, &pb.MatrixUpdateMessage_Element{
+						Server:   pgconv.ServerIDTPBE(e.ServerID),
 						StageId:  e.StageID,
 						ItemId:   e.ItemID,
 						Times:    e.Times,

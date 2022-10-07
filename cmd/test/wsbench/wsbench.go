@@ -49,31 +49,26 @@ func randomInSlice(slice []uint32) uint32 {
 }
 
 var (
-	Items  = penguinItemIds()
-	Stages = penguinStageIds()
+	Servers = []pb.Server{pb.Server_CN, pb.Server_US, pb.Server_JP, pb.Server_KR}
+	Items   = penguinItemIds()
+	Stages  = penguinStageIds()
 )
 
 func getRandomSubscriptionReq() []byte {
 	if rand.Intn(2) == 0 {
-		b, err := proto.Marshal(&pb.MatrixUpdateSubscribeReq{
+		return lo.Must(proto.Marshal(&pb.MatrixUpdateSubscribeReq{
 			Id: &pb.MatrixUpdateSubscribeReq_StageId{
 				StageId: randomInSlice(Stages),
 			},
-		})
-		if err != nil {
-			log.Fatalln(err)
-		}
-		return b
+			Server: Servers[rand.Intn(len(Servers))],
+		}))
 	} else {
-		b, err := proto.Marshal(&pb.MatrixUpdateSubscribeReq{
+		return lo.Must(proto.Marshal(&pb.MatrixUpdateSubscribeReq{
 			Id: &pb.MatrixUpdateSubscribeReq_ItemId{
 				ItemId: randomInSlice(Items),
 			},
-		})
-		if err != nil {
-			log.Fatalln(err)
-		}
-		return b
+			Server: Servers[rand.Intn(len(Servers))],
+		}))
 	}
 }
 

@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "shared.proto";
+
 option go_package = "github.com/penguin-statistics/livehouse/internal/model/pb";
 
 enum Language {
@@ -8,13 +10,6 @@ enum Language {
   JA_JP = 2;
   KO_KR = 3;
   OTHER = 4;
-}
-
-enum Server {
-  CN = 0;
-  US = 1;
-  JP = 2;
-  KR = 3;
 }
 
 message Skeleton {
@@ -48,10 +43,11 @@ enum MessageType {
 
 message MatrixUpdateMessage {
     message Element {
-        uint32 stage_id = 1;
-        uint32 item_id = 2;
-        uint64 quantity = 3;
-        uint64 times = 4;
+        Server server = 1;
+        uint32 stage_id = 2;
+        uint32 item_id = 3;
+        uint64 quantity = 4;
+        uint64 times = 5;
     }
 
     Header header = 1;
@@ -60,9 +56,10 @@ message MatrixUpdateMessage {
 
 message MatrixUpdateSubscribeReq {
     Header header = 1;
+    Server server = 2;
     oneof id {
-        uint32 stage_id = 2;
-        uint32 item_id = 3;
+        uint32 stage_id = 3;
+        uint32 item_id = 4;
     }
 }
 

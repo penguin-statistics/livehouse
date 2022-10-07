@@ -9,6 +9,7 @@ import (
 
 	"github.com/penguin-statistics/livehouse/internal/model/pb"
 	"github.com/penguin-statistics/livehouse/internal/pkg/lhcore"
+	"github.com/penguin-statistics/livehouse/internal/pkg/pgconv"
 )
 
 type IntakeDeps struct {
@@ -38,8 +39,9 @@ func (c *Intake) PushReportBatch(ctx context.Context, req *pb.ReportBatchRequest
 	for _, report := range req.GetReport() {
 		for _, drops := range report.GetDrops() {
 			el := c.DropSet.GetOrCreateElement(lhcore.IDSet{
-				StageID: report.GetStageId(),
-				ItemID:  drops.GetItemId(),
+				ServerID: pgconv.ServerIDFPBE(report.Server),
+				StageID:  report.GetStageId(),
+				ItemID:   drops.GetItemId(),
 			})
 			el.Incr(1, drops.GetQuantity(), report.GetGeneration())
 		}
@@ -58,8 +60,9 @@ func (c *Intake) PushMatrixBatch(ctx context.Context, req *pb.MatrixBatchRequest
 
 	for _, matrix := range req.GetMatrix() {
 		el := c.DropSet.GetOrCreateElement(lhcore.IDSet{
-			StageID: matrix.GetStageId(),
-			ItemID:  matrix.GetItemId(),
+			ServerID: pgconv.ServerIDFPBE(req.Server),
+			StageID:  matrix.GetStageId(),
+			ItemID:   matrix.GetItemId(),
 		})
 		el.CutOut(matrix.GetTimes(), matrix.GetQuantity(), req.GetGeneration())
 	}
