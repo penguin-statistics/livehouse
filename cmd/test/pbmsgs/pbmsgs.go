@@ -9,9 +9,10 @@ import (
 )
 
 func main() {
+	stageId := uint32(175)
 	req := pb.MatrixUpdateSubscribeReq{
 		Id: &pb.MatrixUpdateSubscribeReq_StageId{
-			StageId: 1,
+			StageId: stageId,
 		},
 	}
 
@@ -20,5 +21,5 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	log.Printf("update subscription with stageId = 1 (hex): %x", b)
+	log.Printf("update subscription with stageId = %d (hex): %x", stageId, b)
 }
