@@ -42,13 +42,13 @@ func (c *Intake) PushReportBatch(ctx context.Context, req *pb.ReportBatchRequest
 
 	for _, report := range req.GetReports() {
 		server := pgconv.ServerIDFPBE(report.Server)
+		idset := lhcore.IDSet{
+			ServerID: server,
+			StageID:  report.StageId,
+		}
 
 		for _, drops := range report.GetDrops() {
-			idset := lhcore.IDSet{
-				ServerID: server,
-				StageID:  report.StageId,
-				ItemID:   drops.ItemId,
-			}
+			idset.ItemID = drops.ItemId
 
 			el := c.DropSet.GetOrCreateElement(idset)
 			// not Incr-ing the times here.

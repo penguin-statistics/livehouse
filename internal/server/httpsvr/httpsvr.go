@@ -1,6 +1,7 @@
 package httpsvr
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,6 +14,7 @@ import (
 	"github.com/rs/xid"
 
 	"github.com/penguin-statistics/livehouse/internal/config"
+	"github.com/penguin-statistics/livehouse/internal/pkg/bininfo"
 )
 
 type Server struct {
@@ -21,8 +23,8 @@ type Server struct {
 
 func Create(conf *config.Config) *fiber.App {
 	app := fiber.New(fiber.Config{
-		AppName:                 "penguin-livehouse",
-		ServerHeader:            "penguin-livehouse",
+		AppName:                 "Penguin Stats LiveHouse",
+		ServerHeader:            fmt.Sprintf("PenguinLiveHouse/%s", bininfo.Version),
 		ProxyHeader:             fiber.HeaderXForwardedFor,
 		EnableTrustedProxyCheck: true,
 		TrustedProxies: []string{
