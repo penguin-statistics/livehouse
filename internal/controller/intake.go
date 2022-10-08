@@ -36,7 +36,7 @@ func (c *Intake) PushReportBatch(ctx context.Context, req *pb.ReportBatchRequest
 		Interface("request", req).
 		Msgf("received report batch")
 
-	for _, report := range req.GetReport() {
+	for _, report := range req.GetReports() {
 		for _, drops := range report.GetDrops() {
 			el := c.DropSet.GetOrCreateElement(lhcore.IDSet{
 				ServerID: pgconv.ServerIDFPBE(report.Server),
