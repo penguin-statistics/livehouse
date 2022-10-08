@@ -2,8 +2,10 @@ package controller
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/rs/zerolog/log"
+	"github.com/samber/lo"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 
@@ -33,18 +35,27 @@ func RegisterIntake(serv *grpc.Server, deps IntakeDeps) {
 
 func (c *Intake) PushReportBatch(ctx context.Context, req *pb.ReportBatchRequest) (*pb.ReportBatchACK, error) {
 	log.Trace().
-		Interface("request", req).
+		Str("request", lo.Reduce(req.Reports, func(acc string, r *pb.Report, _ int) string {
+			return acc + fmt.Sprintf("%s %d %v; ", r.GetServer(), r.GetStageId(), r.GetDrops())
+		}, "")).
 		Msgf("received report batch")
 
 	for _, report := range req.GetReports() {
+		server := pgconv.ServerIDFPBE(report.Server)
+
 		for _, drops := range report.GetDrops() {
-			el := c.DropSet.GetOrCreateElement(lhcore.IDSet{
-				ServerID: pgconv.ServerIDFPBE(report.Server),
-				StageID:  report.GetStageId(),
-				ItemID:   drops.GetItemId(),
-			})
-			el.Incr(1, drops.GetQuantity(), report.GetGeneration())
+			idset := lhcore.IDSet{
+				ServerID: server,
+				StageID:  report.StageId,
+				ItemID:   drops.ItemId,
+			}
+
+			el := c.DropSet.GetOrCreateElement(idset)
+			// not Incr-ing the times here.
+			el.Incr(0, drops.Quantity, report.Generation)
 		}
+
+		c.DropSet.IncrTimes(report.StageId, server, report.Generation)
 	}
 
 	log.Debug().
