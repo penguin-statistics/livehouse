@@ -120,6 +120,11 @@ type DropElement struct {
 }
 
 func (e *DropElement) Incr(times, quantity, generation uint64) {
+	log.Trace().
+		Interface("idset", e.IDSet).
+		Uint64("times", times).
+		Uint64("quantity", quantity).
+		Msg("DropElement.Incr")
 	incrT := e.Times.Incr(times, generation)
 	incrQ := e.Quantity.Incr(quantity, generation)
 
@@ -258,4 +263,12 @@ func (d *DropSet) RemoveSub(sub *Sub) {
 	defer d.mu.Unlock()
 
 	d.removeSub(sub)
+}
+
+func (d *DropSet) IncrTimes(stageId uint32, server uint8, generation uint64) {
+	pairid := IDPair{ServerID: server, EntityID: stageId}.ID()
+	m := d.StageElements[pairid]
+	for _, element := range m {
+		element.Incr(1, 0, generation)
+	}
 }

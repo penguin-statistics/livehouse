@@ -18,12 +18,15 @@ import (
 type Live struct {
 	DropSet *lhcore.DropSet
 	Hub     *wshub.Hub
+
+	ResultFlushInterval time.Duration
 }
 
 func NewLive(dropSet *lhcore.DropSet, hub *wshub.Hub) *Live {
 	return &Live{
-		DropSet: dropSet,
-		Hub:     hub,
+		DropSet:             dropSet,
+		Hub:                 hub,
+		ResultFlushInterval: 2 * time.Second,
 	}
 }
 
@@ -111,19 +114,17 @@ func (l *Live) Handle(c *websocket.Conn) {
 				if err != nil {
 					log.Error().Err(err).Msg("failed to replace subscription to stage elements")
 					resp.Error = "failed to replace subscription to stage elements: " + err.Error()
-					continue
 				}
 			default:
 				log.Warn().Msg("failed to determine update subscription request: both stageId & itemId are zero-value")
 				resp.Error = "failed to determine update subscription request: both stageId & itemId are zero-value"
-				continue
 			}
 		}
 	}()
 
 	go func() {
 		// result receiver & websocket sender
-		timer := time.NewTicker(time.Second * 5)
+		timer := time.NewTicker(l.ResultFlushInterval)
 		for {
 			select {
 			case <-timer.C:
