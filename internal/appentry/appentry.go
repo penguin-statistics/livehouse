@@ -7,6 +7,7 @@ import (
 
 	"github.com/penguin-statistics/livehouse/internal/config"
 	"github.com/penguin-statistics/livehouse/internal/controller"
+	"github.com/penguin-statistics/livehouse/internal/devtools"
 	"github.com/penguin-statistics/livehouse/internal/infra"
 	"github.com/penguin-statistics/livehouse/internal/pkg/lhcore"
 	"github.com/penguin-statistics/livehouse/internal/pkg/logger"
@@ -45,6 +46,8 @@ func ProvideOptions() []fx.Option {
 
 		// Controllers
 		controller.Module(),
+
+		devtools.Module(),
 
 		// fx Extra Options
 		fx.StartTimeout(1 * time.Second),
