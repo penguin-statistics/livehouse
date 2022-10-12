@@ -1,7 +1,8 @@
 package pgconv
 
 import (
-	"exusiai.dev/livehouse/internal/constant"
+	"exusiai.dev/gommon/constant"
+
 	"exusiai.dev/livehouse/internal/model/pb"
 )
 

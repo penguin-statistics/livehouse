@@ -27,6 +27,7 @@ require (
 )
 
 require (
+	exusiai.dev/gommon v0.0.1 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

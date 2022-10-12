@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
 
-	"exusiai.dev/livehouse/internal/constant"
+	"exusiai.dev/gommon/constant"
 	"exusiai.dev/livehouse/internal/service"
 )
 
