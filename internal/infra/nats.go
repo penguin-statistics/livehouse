@@ -6,7 +6,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/rs/zerolog/log"
 
-	"github.com/penguin-statistics/livehouse/internal/config"
+	"exusiai.dev/livehouse/internal/config"
 )
 
 func NATS(conf *config.Config) (*nats.Conn, nats.JetStreamContext, error) {

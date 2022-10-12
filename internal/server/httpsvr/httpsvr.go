@@ -13,8 +13,8 @@ import (
 	"github.com/gofiber/helmet/v2"
 	"github.com/rs/xid"
 
-	"github.com/penguin-statistics/livehouse/internal/config"
-	"github.com/penguin-statistics/livehouse/internal/pkg/bininfo"
+	"exusiai.dev/livehouse/internal/config"
+	"exusiai.dev/livehouse/internal/pkg/bininfo"
 )
 
 type Server struct {

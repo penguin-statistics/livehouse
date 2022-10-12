@@ -7,7 +7,7 @@ import (
 
 	"go.uber.org/fx"
 
-	"github.com/penguin-statistics/livehouse/internal/config"
+	"exusiai.dev/livehouse/internal/config"
 )
 
 func RegisterTracing(conf *config.Config, lc fx.Lifecycle) error {

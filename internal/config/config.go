@@ -63,7 +63,7 @@ func Parse() (*Config, error) {
 	err := envconfig.Process("penguin_livehouse", &config)
 	if err != nil {
 		_ = envconfig.Usage("penguin_livehouse", &config)
-		return nil, fmt.Errorf("failed to parse configuration: %w. More info on how to configure this service is located at https://pkg.go.dev/github.com/penguin-statistics/livehouse/internal/config#Config", err)
+		return nil, fmt.Errorf("failed to parse configuration: %w. More info on how to configure this service is located at https://pkg.go.dev/exusiai.dev/livehouse/internal/config#Config", err)
 	}
 
 	return &config, nil

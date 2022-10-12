@@ -9,10 +9,10 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/penguin-statistics/livehouse/internal/model/pb"
-	"github.com/penguin-statistics/livehouse/internal/pkg/lhcore"
-	"github.com/penguin-statistics/livehouse/internal/pkg/pgconv"
-	"github.com/penguin-statistics/livehouse/internal/pkg/wshub"
+	"exusiai.dev/livehouse/internal/model/pb"
+	"exusiai.dev/livehouse/internal/pkg/lhcore"
+	"exusiai.dev/livehouse/internal/pkg/pgconv"
+	"exusiai.dev/livehouse/internal/pkg/wshub"
 )
 
 type Live struct {

@@ -4,7 +4,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/penguin-statistics/livehouse/internal/config"
+	"exusiai.dev/livehouse/internal/config"
 )
 
 func Create(conf *config.Config) *grpc.Server {

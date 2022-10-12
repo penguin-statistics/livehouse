@@ -1,8 +1,8 @@
 package pgconv
 
 import (
-	"github.com/penguin-statistics/livehouse/internal/constant"
-	"github.com/penguin-statistics/livehouse/internal/model/pb"
+	"exusiai.dev/livehouse/internal/constant"
+	"exusiai.dev/livehouse/internal/model/pb"
 )
 
 func ServerID(s string) uint8 {

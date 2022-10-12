@@ -5,7 +5,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/penguin-statistics/livehouse/internal/model/pb"
+	"exusiai.dev/livehouse/internal/model/pb"
 )
 
 func main() {

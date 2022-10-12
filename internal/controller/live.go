@@ -8,8 +8,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
 
-	"github.com/penguin-statistics/livehouse/internal/constant"
-	"github.com/penguin-statistics/livehouse/internal/service"
+	"exusiai.dev/livehouse/internal/constant"
+	"exusiai.dev/livehouse/internal/service"
 )
 
 type LiveDeps struct {

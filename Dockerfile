@@ -20,7 +20,7 @@ RUN go mod download
 COPY . .
 
 # inject versioning information & build the binary
-RUN export BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); go build -o livehouse -ldflags "-X github.com/penguin-statistics/livehouse/internal/pkg/bininfo.Version=$VERSION -X github.com/penguin-statistics/livehouse/internal/pkg/bininfo.BuildTime=$BUILD_TIME" .
+RUN export BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); go build -o livehouse -ldflags "-X exusiai.dev/livehouse/internal/pkg/bininfo.Version=$VERSION -X exusiai.dev/livehouse/internal/pkg/bininfo.BuildTime=$BUILD_TIME" .
 
 # runner
 FROM base AS runner

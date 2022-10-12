@@ -9,9 +9,9 @@ import (
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 
-	"github.com/penguin-statistics/livehouse/internal/model/pb"
-	"github.com/penguin-statistics/livehouse/internal/pkg/lhcore"
-	"github.com/penguin-statistics/livehouse/internal/pkg/pgconv"
+	"exusiai.dev/livehouse/internal/model/pb"
+	"exusiai.dev/livehouse/internal/pkg/lhcore"
+	"exusiai.dev/livehouse/internal/pkg/pgconv"
 )
 
 type IntakeDeps struct {

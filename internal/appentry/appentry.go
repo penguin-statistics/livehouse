@@ -5,17 +5,17 @@ import (
 
 	"go.uber.org/fx"
 
-	"github.com/penguin-statistics/livehouse/internal/config"
-	"github.com/penguin-statistics/livehouse/internal/controller"
-	"github.com/penguin-statistics/livehouse/internal/devtools"
-	"github.com/penguin-statistics/livehouse/internal/infra"
-	"github.com/penguin-statistics/livehouse/internal/pkg/lhcore"
-	"github.com/penguin-statistics/livehouse/internal/pkg/logger"
-	"github.com/penguin-statistics/livehouse/internal/pkg/wshub"
-	"github.com/penguin-statistics/livehouse/internal/repo"
-	"github.com/penguin-statistics/livehouse/internal/server/grpcsvr"
-	"github.com/penguin-statistics/livehouse/internal/server/httpsvr"
-	"github.com/penguin-statistics/livehouse/internal/service"
+	"exusiai.dev/livehouse/internal/config"
+	"exusiai.dev/livehouse/internal/controller"
+	"exusiai.dev/livehouse/internal/devtools"
+	"exusiai.dev/livehouse/internal/infra"
+	"exusiai.dev/livehouse/internal/pkg/lhcore"
+	"exusiai.dev/livehouse/internal/pkg/logger"
+	"exusiai.dev/livehouse/internal/pkg/wshub"
+	"exusiai.dev/livehouse/internal/repo"
+	"exusiai.dev/livehouse/internal/server/grpcsvr"
+	"exusiai.dev/livehouse/internal/server/httpsvr"
+	"exusiai.dev/livehouse/internal/service"
 )
 
 func ProvideOptions() []fx.Option {

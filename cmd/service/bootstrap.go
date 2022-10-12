@@ -3,7 +3,7 @@ package service
 import (
 	"go.uber.org/fx"
 
-	"github.com/penguin-statistics/livehouse/internal/appentry"
+	"exusiai.dev/livehouse/internal/appentry"
 )
 
 func Bootstrap() {

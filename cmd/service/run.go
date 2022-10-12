@@ -12,8 +12,8 @@ import (
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 
-	"github.com/penguin-statistics/livehouse/internal/config"
-	"github.com/penguin-statistics/livehouse/internal/pkg/async"
+	"exusiai.dev/livehouse/internal/config"
+	"exusiai.dev/livehouse/internal/pkg/async"
 )
 
 func run(grpcserv *grpc.Server, httpserv *fiber.App, conf *config.Config, lc fx.Lifecycle) {
