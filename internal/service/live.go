@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/protobuf/proto"
 
-	"exusiai.dev/livehouse/internal/model/pb"
+	"exusiai.dev/gommon/model/pb"
 	"exusiai.dev/livehouse/internal/pkg/lhcore"
 	"exusiai.dev/livehouse/internal/pkg/pgconv"
 	"exusiai.dev/livehouse/internal/pkg/wshub"

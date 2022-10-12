@@ -9,7 +9,7 @@ import (
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 
-	"exusiai.dev/livehouse/internal/model/pb"
+	"exusiai.dev/gommon/model/pb"
 	"exusiai.dev/livehouse/internal/pkg/lhcore"
 	"exusiai.dev/livehouse/internal/pkg/pgconv"
 )

@@ -2,8 +2,7 @@ package pgconv
 
 import (
 	"exusiai.dev/gommon/constant"
-
-	"exusiai.dev/livehouse/internal/model/pb"
+	"exusiai.dev/gommon/model/pb"
 )
 
 func ServerID(s string) uint8 {

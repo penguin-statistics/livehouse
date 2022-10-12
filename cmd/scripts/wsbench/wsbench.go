@@ -12,7 +12,7 @@ import (
 	"github.com/tidwall/gjson"
 	"google.golang.org/protobuf/proto"
 
-	"exusiai.dev/livehouse/internal/model/pb"
+	"exusiai.dev/gommon/model/pb"
 )
 
 func penguinV3GetRequest(path string) []byte {

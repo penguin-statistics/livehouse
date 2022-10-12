@@ -3,6 +3,7 @@ module exusiai.dev/livehouse
 go 1.19
 
 require (
+	exusiai.dev/gommon v0.0.3
 	github.com/fasthttp/websocket v1.5.0
 	github.com/getsentry/sentry-go v0.14.0
 	github.com/go-redis/redis/v8 v8.11.5
@@ -27,7 +28,6 @@ require (
 )
 
 require (
-	exusiai.dev/gommon v0.0.1 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

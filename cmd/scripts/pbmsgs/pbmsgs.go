@@ -5,7 +5,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"exusiai.dev/livehouse/internal/model/pb"
+	"exusiai.dev/gommon/model/pb"
 )
 
 func main() {
