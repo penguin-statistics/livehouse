@@ -69,7 +69,7 @@ func main() {
 
 		start := time.Now()
 		var req pb.ReportBatchRequest
-		req.Report = make([]*pb.Report, fakeReportSize)
+		req.Reports = make([]*pb.Report, fakeReportSize)
 		for i := 0; i < fakeReportSize; i++ {
 			drops := make([]*pb.Drop, rand.Intn(10)+1)
 			for j := range drops {
@@ -79,7 +79,7 @@ func main() {
 				}
 			}
 
-			req.Report[i] = &pb.Report{
+			req.Reports[i] = &pb.Report{
 				Server:  Servers[rand.Intn(len(Servers))],
 				StageId: randomInSlice(stages),
 				Drops:   drops,
