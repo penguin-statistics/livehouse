@@ -53,15 +53,15 @@ func (d *DropSet) GetOrCreateElement(idset IDSet) *DropElement {
 		return actual
 	}
 
+	// populate CombineElements
 	element := &DropElement{
 		IDSet: idset,
 	}
 	d.CombineElements[idset.Hash()] = element
 	actual = element
 
+	// populate StageElements
 	spairId := idset.StagePair().Hash()
-	ipairId := idset.ItemPair().Hash()
-
 	_, ok = d.StageElements[spairId]
 	if !ok {
 		made := map[uint32]*DropElement{idset.ItemID: element}
@@ -70,6 +70,8 @@ func (d *DropSet) GetOrCreateElement(idset IDSet) *DropElement {
 		d.StageElements[spairId][idset.ItemID] = element
 	}
 
+	// populate ItemElements
+	ipairId := idset.ItemPair().Hash()
 	_, ok = d.ItemElements[ipairId]
 	if !ok {
 		made := map[uint32]*DropElement{idset.StageID: element}

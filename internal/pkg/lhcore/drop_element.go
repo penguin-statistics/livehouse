@@ -7,9 +7,14 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// DropElementValue
 type DropElementValue struct {
 	// secs are the subsections in which denotes the quantity of drops for
-	// different generations
+	// different generations.
+	// The key of the map is a uint64 generation value, and the value of the map
+	// is a *uint64 actual value corresponding to suhc generation. The pointer
+	// is for atomic.AddUint64 to update the value atomically so that DropElementValue
+	// could be Incr-ed with low overhead.
 	secs sync.Map
 
 	sync.RWMutex
@@ -61,14 +66,18 @@ func (d *DropElementValue) recalcSum() {
 	d.sum += d.abs
 }
 
+// DropElement contains all metrics for a drop element identified by
+// an IDSet, as well all subscriptions to such DropElement.
 type DropElement struct {
 	IDSet
 
-	// Values
-	Times    DropElementValue
+	// Times describes the amount of occurances of reports such drop
+	// may possibly drop.
+	Times DropElementValue
+	// Quantity describes the amount of occurances that such item has dropped
 	Quantity DropElementValue
 
-	// Subscriptions
+	// Subscriptions, map[ClientID]*Sub
 	Subscriptions sync.Map
 }
 
