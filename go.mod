@@ -8,7 +8,7 @@ require (
 	github.com/getsentry/sentry-go v0.14.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gofiber/fiber/v2 v2.39.0
-	github.com/gofiber/helmet/v2 v2.2.17
+	github.com/gofiber/helmet/v2 v2.2.18
 	github.com/gofiber/websocket/v2 v2.1.1
 	github.com/joho/godotenv v1.4.0
 	github.com/kelseyhightower/envconfig v1.4.0
