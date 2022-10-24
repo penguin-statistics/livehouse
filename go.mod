@@ -18,7 +18,7 @@ require (
 	github.com/rs/xid v1.4.0
 	github.com/rs/zerolog v1.28.0
 	github.com/samber/lo v1.33.0
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	github.com/tidwall/gjson v1.14.3
 	go.uber.org/fx v1.18.2
 	golang.org/x/exp v0.0.0-20220428152302-39d4317da171
