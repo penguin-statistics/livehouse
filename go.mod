@@ -7,7 +7,7 @@ require (
 	github.com/fasthttp/websocket v1.5.0
 	github.com/getsentry/sentry-go v0.15.0
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/gofiber/fiber/v2 v2.39.0
+	github.com/gofiber/fiber/v2 v2.40.0
 	github.com/gofiber/helmet/v2 v2.2.21
 	github.com/gofiber/websocket/v2 v2.1.1
 	github.com/joho/godotenv v1.4.0
@@ -45,7 +45,7 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.40.0 // indirect
+	github.com/valyala/fasthttp v1.41.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20220607223854-30acc4cbd2aa // indirect
