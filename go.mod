@@ -5,7 +5,7 @@ go 1.19
 require (
 	exusiai.dev/gommon v0.0.4
 	github.com/fasthttp/websocket v1.5.0
-	github.com/getsentry/sentry-go v0.15.0
+	github.com/getsentry/sentry-go v0.16.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gofiber/fiber/v2 v2.40.1
 	github.com/gofiber/helmet/v2 v2.2.22
