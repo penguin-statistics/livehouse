@@ -121,6 +121,8 @@ github.com/gofiber/helmet/v2 v2.2.21 h1:r7q5zaigL/PKwE4FRPZ7NCLmKD8IY6jt3bq3leCm
 github.com/gofiber/helmet/v2 v2.2.21/go.mod h1:hGsMgmaBpCHX2GZlPXW7rghCFrGR0gXWfhsTljGQjhQ=
 github.com/gofiber/helmet/v2 v2.2.22 h1:kACyVKnu3RpBmr0IomxwxwFzTLJuWllRCA5DQEminxQ=
 github.com/gofiber/helmet/v2 v2.2.22/go.mod h1:8eDCsQ6XV+Ye41c+vQKyPQdG6NW9iQhlgdnwRIvp01M=
+github.com/gofiber/helmet/v2 v2.2.23 h1:hEastMbezQwbqJgSIFvgtx/lmb51bqi6T6GW/SBhiwo=
+github.com/gofiber/helmet/v2 v2.2.23/go.mod h1:wqmrFiOYWkoOXtsf4OOdNVUABkjCvwJi9AU8xa/7SAA=
 github.com/gofiber/websocket/v2 v2.1.0 h1:EqxeH9wT1vz1H+sPmQJ3g+gUfB24pakJAB2I9MPHcHA=
 github.com/gofiber/websocket/v2 v2.1.0/go.mod h1:9DgZTZfxVWT6549+k869HqUdZK0RIL1LQpy2UY+gGkM=
 github.com/gofiber/websocket/v2 v2.1.1 h1:Q88s88UL8B+elZTT/QB+ocDb1REhdMEmnysI0C9zzqs=
