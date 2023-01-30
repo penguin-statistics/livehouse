@@ -6,7 +6,7 @@ require (
 	exusiai.dev/gommon v0.0.5
 	github.com/fasthttp/websocket v1.5.1
 	github.com/getsentry/sentry-go v0.17.0
-	github.com/go-redis/redis/v8 v8.11.5
+	github.com/go-redis/redis/v9 v9.0.1
 	github.com/gofiber/fiber/v2 v2.41.0
 	github.com/gofiber/helmet/v2 v2.2.23
 	github.com/gofiber/websocket/v2 v2.1.3
