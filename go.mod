@@ -22,7 +22,7 @@ require (
 	github.com/tidwall/gjson v1.14.4
 	go.uber.org/fx v1.18.2
 	golang.org/x/exp v0.0.0-20220428152302-39d4317da171
-	google.golang.org/grpc v1.52.3
+	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
@@ -52,7 +52,7 @@ require (
 	github.com/valyala/fasthttp v1.44.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/text v0.6.0 // indirect
-	google.golang.org/genproto v0.0.0-20221118155620-16455021b5e6 // indirect
+	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
