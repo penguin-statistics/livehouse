@@ -3,7 +3,7 @@ module exusiai.dev/livehouse
 go 1.19
 
 require (
-	exusiai.dev/gommon v0.0.5
+	exusiai.dev/gommon v0.0.8
 	github.com/fasthttp/websocket v1.5.1
 	github.com/getsentry/sentry-go v0.19.0
 	github.com/gofiber/fiber/v2 v2.42.0
