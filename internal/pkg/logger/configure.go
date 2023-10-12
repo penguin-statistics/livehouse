@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"io"
 	"os"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 	"gopkg.in/natefinch/lumberjack.v2"
 
-	"github.com/penguin-statistics/livehouse/internal/config"
+	"exusiai.dev/livehouse/internal/config"
 )
 
 func Configure(conf *config.Config) {
@@ -18,25 +19,39 @@ func Configure(conf *config.Config) {
 
 	_ = os.Mkdir("logs", os.ModePerm)
 
-	var level zerolog.Level
-	if conf.DevMode {
-		level = zerolog.TraceLevel
-	} else {
-		level = zerolog.DebugLevel
+	zerologLogLevelMap := map[string]zerolog.Level{
+		"debug": zerolog.DebugLevel,
+		"info":  zerolog.InfoLevel,
+		"warn":  zerolog.WarnLevel,
+		"error": zerolog.ErrorLevel,
+		"fatal": zerolog.FatalLevel,
+		"panic": zerolog.PanicLevel,
+		"trace": zerolog.TraceLevel,
 	}
 
-	writer := zerolog.MultiLevelWriter(
-		&lumberjack.Logger{
-			Filename: "logs/app.log",
-			MaxSize:  100, // megabytes
-			MaxAge:   90,  // days
-			Compress: true,
-		},
-		zerolog.ConsoleWriter{
-			Out:        os.Stdout,
-			TimeFormat: time.RFC3339Nano,
-		},
-	)
+	level, ok := zerologLogLevelMap[conf.LogLevel]
+	if !ok {
+		level = zerolog.InfoLevel
+	}
+
+	var writer io.Writer
+
+	if conf.LogJsonStdout {
+		writer = os.Stdout
+	} else {
+		writer = zerolog.MultiLevelWriter(
+			&lumberjack.Logger{
+				Filename: "logs/app.log",
+				MaxSize:  100, // megabytes
+				MaxAge:   90,  // days
+				Compress: true,
+			},
+			zerolog.ConsoleWriter{
+				Out:        os.Stdout,
+				TimeFormat: time.RFC3339Nano,
+			},
+		)
+	}
 
 	log.Logger = zerolog.New(writer).
 		With().

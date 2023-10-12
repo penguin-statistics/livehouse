@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 
-	"github.com/penguin-statistics/livehouse/internal/config"
+	"exusiai.dev/livehouse/internal/config"
 )
 
 func Redis(conf *config.Config) (*redis.Client, error) {

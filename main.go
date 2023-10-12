@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/penguin-statistics/livehouse/cmd/service"
+	"exusiai.dev/livehouse/cmd/service"
 )
 
 func main() {

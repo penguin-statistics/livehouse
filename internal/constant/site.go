@@ -8,8 +8,7 @@ const (
 	SiteGlobalMirrorHost        = "penguin-stats.io"
 	SiteChinaMainlandMirrorHost = "penguin-stats.cn"
 
-	ShimCompatibilityHeaderKey   = "X-Penguin-Compatible"
-	ShimCompatibilityHeaderValue = "frontend-v2@v3.4.0"
+	ShimCompatibilityHeaderKey = "X-Penguin-Compatible"
 
 	DefaultServer = "CN"
 )
@@ -31,6 +30,14 @@ var ServerNameMapping = map[string]string{
 	"US": "美服",
 	"JP": "日服",
 	"KR": "韩服",
+}
+
+// ServerIDMapping should align with protobuf enum Server
+var ServerIDMapping = map[string]uint8{
+	"CN": 0,
+	"US": 1,
+	"JP": 2,
+	"KR": 3,
 }
 
 var LocMap = map[string]*time.Location{

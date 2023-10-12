@@ -4,8 +4,8 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/rs/zerolog/log"
 
-	"github.com/penguin-statistics/livehouse/internal/config"
-	"github.com/penguin-statistics/livehouse/internal/pkg/bininfo"
+	"exusiai.dev/livehouse/internal/config"
+	"exusiai.dev/livehouse/internal/pkg/bininfo"
 )
 
 func getEnvironment(conf *config.Config) string {
