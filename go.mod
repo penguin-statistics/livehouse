@@ -19,7 +19,7 @@ require (
 	github.com/rs/zerolog v1.29.0
 	github.com/samber/lo v1.38.1
 	github.com/stretchr/testify v1.8.2
-	github.com/tidwall/gjson v1.14.4
+	github.com/tidwall/gjson v1.17.0
 	go.uber.org/fx v1.20.0
 	golang.org/x/exp v0.0.0-20220428152302-39d4317da171
 	google.golang.org/grpc v1.56.2
